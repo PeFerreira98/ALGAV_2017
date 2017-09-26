@@ -1,0 +1,85 @@
+?- fronteira(X,espanha).
+X = portugal ;
+X = alemanha.
+
+?- fronteira(espanha,X).
+X = franca.
+
+?- vizinho(portugal,X).
+X = espanha ;
+false.
+
+?- vizinho(espanha,X).
+X = franca ;
+X = portugal ;
+X = alemanha.
+
+?- vizinho(X,espanha).
+X = franca ;
+X = portugal ;
+X = alemanha.
+
+?- contSemPaises(X).
+X = africa ;
+X = asia ;
+X = oceania.
+
+?- semVizinhos(X).
+X = madeira.
+
+?- chegoLaFacil(portugal,Y).
+Y = espanha ;
+Y = franca ;
+Y = alemanha ;
+false.
+
+?- potencia(2,3,X).
+X = 8 .
+
+?- potencia(2,0,X).
+X = 1.
+
+?- potencia(2,1,X).
+X = 2.
+
+?- potencia(2,-3,X).
+X = 0.125.
+
+?- potencia(-2,3,X).
+X = -8 .
+
+?- potencia(-2,4,X).
+X = 16 .
+
+?- somatorio(2,5,X).
+X = 14 .
+
+?- somatorio(5,2,X).
+X = 14 .
+
+?- somatorio(-2,2,X).
+X = 0 .
+
+?- somatorio(-5,2,X).
+X = -12 .
+
+?- divid(8,4,Q,R).
+Q = 2,
+R = 0 .
+
+?- divid(2,2,Q,R).
+Q = 1,
+R = 0 .
+
+?- divid(2,4,Q,R).
+Q = 0,
+R = 2 .
+
+?- divid(8,4,Q,R).
+Q = 2,
+R = 0 .
+
+?- divid(8,3,Q,R).
+Q = 2,
+R = 1 .
+
