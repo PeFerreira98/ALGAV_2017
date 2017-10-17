@@ -230,20 +230,19 @@ paisesFronteira(P,X,Lst) :-
 
 %-------------------
 
-doisMaisPop() :-
-    findall(X, pais(_,_,X), Lst), write(Lst), nl,
-    max_list(Lst, V1), write(V1), nl,
+doisMaisPop(P1, P2) :- 
+    findall(H, pais(_,_,H), LstH),
+    sort(0, @>=, LstH,  SortedH),
+    doisMaisPop(P1, P2, SortedH).
 
-    delete(V1,Lst,Lst2), write(Lst2), nl.
+doisMaisPop(P1, P2, [H1|[H2|_]]) :-
+    pais(P1, _, H1),
+    pais(P2, _, H2).
 
-    %max_list(Lst, V2), write(V2), nl,
+%------------------
 
-    %pais(P1,_,V1), pais(P2,_,V2).
-
-max_list(L, V) :-
-    select(V, L, R), \+((member(X, R), X > V)).
-
-remove([X|T],X,L1) :- remove(T,X,L1), !.
+paisesGrandes(C, N, L) :- 
+    findall(H-P, (pais(P,C,H), H > N), L).
 
 %-------------------
 
