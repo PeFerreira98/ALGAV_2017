@@ -243,6 +243,17 @@ doisMaisPop(P1, P2, [H1|[H2|_]]) :-
 
 paisesGrandes(C, N, L) :- 
     findall(H-P, (pais(P,C,H), H > N), L).
+    
+%------------------
+
+somaPopViz(P, L, S) :-
+    findall((H, P2), ((fronteira(P, P2); fronteira(P2, P)), pais(P2,_,H)), L), write(L),
+    somaVizinhos(L, S).
+
+somaVizinhos([],0).
+somaVizinhos([(N,_)|L],S):-
+    somaVizinhos(L,S1),
+    S is S1 + N.
 
 %-------------------
 
