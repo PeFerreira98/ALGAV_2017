@@ -1,3 +1,11 @@
+color(blue).
+color(red).
+color(yellow).
+color(orange).
+color(green).
+color(white).
+color(black).
+
 %-utils--------------
 
 connected2(A, B) :- fronteira(A, B) ; fronteira(B, A).
@@ -114,7 +122,35 @@ calculaRoteiros2(Dest, [LA|Outros], NFront, Cam):-
     
 %-9------------------
 
-%TODO
+paisesContinente(C,L):- 
+    findall(P, pais(P,C,_),L).
+
+getColors(Col):- 
+    findall(C, color(C),Col).
+
+conflicts(P1,Color,[[P2,Color]|_]):- 
+    fronteira(P1,P2);fronteira(P2,P1).
+
+conflicts(P,Color,[_|Coloring]):- %
+    conflicts(P,Color,Coloring).
+
+colorir([], _, []).
+
+colorir([H|T],Col,[[H,FColor]|Rest]):-
+    colorir(T,Col,Rest),
+    member(FColor,Col),
+    \+conflicts(H,FColor,Rest).
+
+colocaBC([]).
+colocaBC([[H|T]|Rest]):-
+    colocaBC(Rest),
+    asserta(cor(T,H)), write(T), write(H), nl.
+
+colorir_mapa(C):- 
+    paisesContinente(C,L), 
+    getColors(Col), 
+    colorir(L,Col,FL), 
+    colocaBC(FL).
 
 %-10-----------------
 
@@ -150,6 +186,20 @@ exportar(F) :-
           (write(OS,'fronteira('), write(OS,X), write(OS,', '),
            write(OS,Y), write(OS,').'), nl(OS))
          ),
+    
+   forall(color(X),
+          (write(OS,'color('),
+           write(OS,X),
+           write(OS,').'), nl(OS))
+         ),
+    nl(OS),
+
+    forall(cor(X,Y),
+          (write(OS,'cor('),
+           write(OS,X), write(OS,', '),
+           write(OS,Y),
+           write(OS,').'), nl(OS))
+         ), 
 
    close(OS),
    write('Done!').
