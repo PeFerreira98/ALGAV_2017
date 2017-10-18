@@ -40,3 +40,31 @@ somaVizinhos([(N,_)|L],S):-
 
 %-------------------
 
+exportar :-
+    exportar('test.txt').
+
+exportar(F) :-
+   write('Exporting...'), nl,
+   open(F,write,OS),
+
+   forall(continente(X),
+          (write(OS,'continente('), write(OS,X),
+           write(OS,').'), nl(OS))
+         ),
+   nl(OS),
+
+   forall(pais(X,Y,Z),
+           (write(OS,'pais('), write(OS,X), write(OS,', '),
+            write(OS,Y), write(OS,', '),
+            write(OS,Z), write(OS,').'), nl(OS))
+           ),
+   nl(OS),
+
+   forall(fronteira(X,Y),
+          (write(OS,'fronteira('), write(OS,X), write(OS,', '),
+           write(OS,Y), write(OS,').'), nl(OS))
+         ),
+
+   close(OS),
+   write('Done!').
+
