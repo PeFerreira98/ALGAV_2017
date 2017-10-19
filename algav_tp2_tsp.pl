@@ -16,16 +16,16 @@ city(sofia,42.6976246,23.3222924).
 city(zagreb,45.8150053,15.9785014).
 city(nicosia,35.167604,33.373621).
 city(prague,50.0878114,14.4204598).
-city(copenhagen,55.6762944,12.5681157).
-city(london,51.5001524,-0.1262362).
-city(tallinn,59.4388619,24.7544715).
-city(helsinki,60.1698791,24.9384078).
-city(paris,48.8566667,2.3509871).
-city(marseille,43.296386,5.369954).
-city(tbilisi,41.709981,44.792998).
-city(berlin,52.5234051,13.4113999).
-city(athens,37.97918,23.716647).
-city(budapest,47.4984056,19.0407578).
+%city(copenhagen,55.6762944,12.5681157).
+%city(london,51.5001524,-0.1262362).
+%city(tallinn,59.4388619,24.7544715).
+%city(helsinki,60.1698791,24.9384078).
+%city(paris,48.8566667,2.3509871).
+%city(marseille,43.296386,5.369954).
+%city(tbilisi,41.709981,44.792998).
+%city(berlin,52.5234051,13.4113999).
+%city(athens,37.97918,23.716647).
+%city(budapest,47.4984056,19.0407578).
 %city(reykjavik,64.135338,-21.89521).
 %city(dublin,53.344104,-6.2674937).
 %city(rome,41.8954656,12.4823243).
@@ -85,7 +85,23 @@ distance(Lat1, Lon1, Lat2, Lon2, Dis2):-
 % Online: http://www.movable-type.co.uk/scripts/latlong.html
 %
 
+%Limit 10 Cities
+tsp1(City, Visited, Distance) :-
+	findall(Dist-Visit, tsp(City,Visit,Dist), List),
+	sort(1, @<, List, Sorted),
+	visitList(Visited, Distance, Sorted).
 
+visitList(Visit, Dist, [D-V|_] ) :-
+	Visit = V, Dist = D.
+
+tsp(City, Visited, Distance) :-
+	get_road(City, City, Visited, Distance), 
+	length(Visited, X), totalCities(Y), X == Y.
+
+totalCities(X) :-
+	findall(C, city(C,_,_), L),
+	length(L,Y),
+	X is Y + 1.
 
 get_road(Start, End, Visited, Result) :-
     get_road(Start, End, [Start], 0, Visited, Result).
@@ -100,22 +116,3 @@ get_road(Start, End, Waypoints, DistanceAcc, Visited, TotalDistance) :-
     \+ member(Waypoint, Waypoints),
     NewDistanceAcc is DistanceAcc + Distance,
     get_road(Waypoint, End, [Waypoint|Waypoints], NewDistanceAcc, Visited, TotalDistance).
-
-tsp1(City, Visited, Distance) :-
-	get_road(City, City, Visited, Distance).
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
