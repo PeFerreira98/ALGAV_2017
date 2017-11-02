@@ -1,4 +1,3 @@
-
 % -----------------------------------------------------------------------
 % Trabalho pr�tico: factos de cidades com localiza��o baseada em
 % latitude e longitude e predicado auxiliar para calcular a dist�ncia
@@ -16,30 +15,30 @@ city(sofia,42.6976246,23.3222924).
 city(zagreb,45.8150053,15.9785014).
 city(nicosia,35.167604,33.373621).
 city(prague,50.0878114,14.4204598).
-%city(copenhagen,55.6762944,12.5681157).
-%city(london,51.5001524,-0.1262362).
-%city(tallinn,59.4388619,24.7544715).
-%city(helsinki,60.1698791,24.9384078).
-%city(paris,48.8566667,2.3509871).
-%city(marseille,43.296386,5.369954).
+city(copenhagen,55.6762944,12.5681157).
+city(london,51.5001524,-0.1262362).
+city(tallinn,59.4388619,24.7544715).
+city(helsinki,60.1698791,24.9384078).
+city(paris,48.8566667,2.3509871).
+city(marseille,43.296386,5.369954).
 %city(tbilisi,41.709981,44.792998).
-%city(berlin,52.5234051,13.4113999).
+city(berlin,52.5234051,13.4113999).
 %city(athens,37.97918,23.716647).
 %city(budapest,47.4984056,19.0407578).
 %city(reykjavik,64.135338,-21.89521).
-%city(dublin,53.344104,-6.2674937).
-%city(rome,41.8954656,12.4823243).
+city(dublin,53.344104,-6.2674937).
+city(rome,41.8954656,12.4823243).
 %city(pristina,42.672421,21.164539).
 %city(riga,56.9465346,24.1048525).
 %city(vaduz,47.1410409,9.5214458).
 %city(vilnius,54.6893865,25.2800243).
-%city(luxembourg,49.815273,6.129583).
+city(luxembourg,49.815273,6.129583).
 %city(skopje,42.003812,21.452246).
 %city(valletta,35.904171,14.518907).
 %city(chisinau,47.026859,28.841551).
 %city(monaco,43.750298,7.412841).
 %city(podgorica,42.442575,19.268646).
-%city(amsterdam,52.3738007,4.8909347).
+city(amsterdam,52.3738007,4.8909347).
 %city(belfast,54.5972686,-5.9301088).
 %city(oslo,59.9138204,10.7387413).
 %city(warsaw,52.2296756,21.0122287).
@@ -145,7 +144,7 @@ doIntersect(P1,Q1,P2,Q2):-
  
      % p2, q2 and q1 are colinear and q1 lies on segment p2q2
     O4 == 0, onSegment(P2, Q1, Q2),!
-    ).    
+    ).
     
 linearCoord(City,X,Y):-
 	city(City,Lat,Lon),
@@ -196,36 +195,64 @@ get_road(Start, End, Waypoints, DistanceAcc, Visited, TotalDistance) :-
 tsp2(Orig, Visit):-
     bestfs(Orig, Orig, Visit).    
 
-estimativa(X,Dest,EstX) :-
+estimativa(X, Dest ,EstX) :-
     dist_cities(X, Dest, EstX).
 
-bestfs(Orig,Dest,Cam):-
-	bestfs2(Dest,[Orig],Cam).
+bestfs(Orig, Dest, Cam):-
+	bestfs2(Dest, [Orig], Cam).
 
 %condicao final: destino = nó à cabeça do caminho actual
-bestfs2(Dest,[Dest|T],Cam):- !,
+bestfs2(Dest, [Dest|T], Cam):- !,
 	%caminho actual está invertido
-	reverse([Dest|T],Cam).
+	reverse([Dest|T], Cam).
 
-bestfs2(Dest,LA,Cam):-
-	LA=[Act|_],
+bestfs2(Dest, LA, Cam):-
+    LA = [Act|_],
 	%calcular todos os nodos adjacentes nao visitados e
 	% guardar um tuplo com estimativa e novo caminho
-	findall((EstX,[X|LA]),
-	(\+ member(X,LA), estimativa(X,Dest,EstX)),Novos),
+	findall((EstX, [X|LA]),
+	(city(X, _, _), \+ member(X, LA), estimativa(X, Act, EstX)), Novos),
 	%ordenar pela estimativa
-	sort(Novos,NovosOrd),
+	sort(Novos, NovosOrd),
 	%extrair o melhor que está à cabeça
 	NovosOrd = [(_,Melhor)|_],
 	%chamada recursiva
-	bestfs2(Dest,Melhor,Cam).
+	bestfs2(Dest, Melhor, Cam).
+
+bestfsX(Orig, Cam):-
+	bestfs2X([Orig], Cam).
+
+bestfs2X(LA, Cam):-
+    LA = [Act|_],
+	%calcular todos os nodos adjacentes nao visitados e
+	% guardar um tuplo com estimativa e novo caminho
+	findall((EstX, [X|LA]),
+	(city(X, _, _), \+ member(X, LA), estimativa(X, Act, EstX)), Novos),
+	%ordenar pela estimativa
+	sort(Novos, NovosOrd),
+	%extrair o melhor que está à cabeça
+	NovosOrd = [(_,Melhor)|_],
+    length([Melhor|LA], X), totalCities(Y),
+    ( X == Y ->  !,
+    reverse([Melhor|LA], Cam)
+    ;
+	%chamada recursiva
+	bestfs2X(Melhor, Cam) ).
 
 tsp3(Orig, Visit):-
     tsp2(Orig, VisitTmp),
-    del_cross(TmpPath, Path).
+    del_cross(VisitTmp),
+    Visit = VisitTmp.
 
-del_cross([H|T], Path) :- 
-    linearCoord(H, Hx, Hy),
-    doIntersect((Hx, Hy), ) ->
-  ; .
+del_cross([_|[_|_]]) :- !.
+
+del_cross([H1|[H2|T]]) :- 
+    find_cross(H1, H2, T).
+
+find_cross(H1, H2, [H3|[H4|T]]) :-
+    linearCoord(H1, H1x, H1y),
+    linearCoord(H2, H2x, H2y),
+    doIntersect((H1x,H1y), (H2x, H2y), (, ), (, )) -> 
+  ; ,
+    find_cross(H1, H2, [H4|T]).
     
