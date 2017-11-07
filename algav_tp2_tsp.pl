@@ -238,6 +238,35 @@ bestfs2X(LA, Cam):-
     ;
 	%chamada recursiva
 	bestfs2X(Melhor, Cam) ).
+	
+%----------------------------------------------------------------
+	
+tsp2New(Orig, Path) :-
+    findall(X, city(X,_,_), AllCities),
+    delete(AllCities, Orig, ToCheck),
+    findPath(ToCheck, [Orig], FinalPath),
+    append(FinalPath, [Orig], Path).
+
+findPath([], Path, Path).
+findPath(ToCheck, FinalPath, F) :- 
+    bestNextNode(FinalPath, Next),
+    append(FinalPath, [Next], NewFinalPath),
+    %write(NewFinalPath), nl,
+    delete(ToCheck, Next, NewToCheck),
+    findPath(NewToCheck, NewFinalPath, F).
+
+bestNextNode(LA, Next) :-
+    last(LA, Act),
+    %calcular todos os nodos adjacentes nao visitados e
+	% guardar um tuplo com estimativa e novo caminho
+	findall((EstX, [X|LA]),
+	(city(X, _, _), \+ member(X, LA), dist_cities(X, Act, EstX)), Novos),
+	%ordenar pela estimativa
+	sort(Novos, NovosOrd),
+	%extrair o melhor que está à cabeça
+	NovosOrd = [(_,[Next|_])|_].
+	
+%---------------------------------------------------------
 
 tsp3(Orig, Visit):-
     tsp2(Orig, VisitTmp),
