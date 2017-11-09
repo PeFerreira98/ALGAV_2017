@@ -21,45 +21,42 @@ city(tallinn,59.4388619,24.7544715).
 city(helsinki,60.1698791,24.9384078).
 city(paris,48.8566667,2.3509871).
 city(marseille,43.296386,5.369954).
-%city(tbilisi,41.709981,44.792998).
+city(tbilisi,41.709981,44.792998).
 city(berlin,52.5234051,13.4113999).
-%city(athens,37.97918,23.716647).
-%city(budapest,47.4984056,19.0407578).
-%city(reykjavik,64.135338,-21.89521).
+city(athens,37.97918,23.716647).
+city(budapest,47.4984056,19.0407578).
+city(reykjavik,64.135338,-21.89521).
 city(dublin,53.344104,-6.2674937).
 city(rome,41.8954656,12.4823243).
-%city(pristina,42.672421,21.164539).
-%city(riga,56.9465346,24.1048525).
-%city(vaduz,47.1410409,9.5214458).
-%city(vilnius,54.6893865,25.2800243).
+city(pristina,42.672421,21.164539).
+city(riga,56.9465346,24.1048525).
+city(vaduz,47.1410409,9.5214458).
+city(vilnius,54.6893865,25.2800243).
 city(luxembourg,49.815273,6.129583).
-%city(skopje,42.003812,21.452246).
-%city(valletta,35.904171,14.518907).
-%city(chisinau,47.026859,28.841551).
-%city(monaco,43.750298,7.412841).
-%city(podgorica,42.442575,19.268646).
+city(skopje,42.003812,21.452246).
+city(valletta,35.904171,14.518907).
+city(chisinau,47.026859,28.841551).
+city(monaco,43.750298,7.412841).
+city(podgorica,42.442575,19.268646).
 city(amsterdam,52.3738007,4.8909347).
-%city(belfast,54.5972686,-5.9301088).
-%city(oslo,59.9138204,10.7387413).
-%city(warsaw,52.2296756,21.0122287).
-%city(lisbon,38.7071631,-9.135517).
-%city(bucharest,44.430481,26.12298).
-%city(moscow,55.755786,37.617633).
-%city(san_marino,43.94236,12.457777).
-%city(edinburgh,55.9501755,-3.1875359).
-%city(belgrade,44.802416,20.465601).
-%city(bratislava,48.1483765,17.1073105).
-%city(ljubljana,46.0514263,14.5059655).
-%city(madrid,40.4166909,-3.7003454).
-%city(stockholm,59.3327881,18.0644881).
-%city(bern,46.9479986,7.4481481).
-%city(kiev,50.440951,30.5271814).
-%city(cardiff,51.4813069,-3.1804979).
+city(belfast,54.5972686,-5.9301088).
+city(oslo,59.9138204,10.7387413).
+city(warsaw,52.2296756,21.0122287).
+city(lisbon,38.7071631,-9.135517).
+city(bucharest,44.430481,26.12298).
+city(moscow,55.755786,37.617633).
+city(san_marino,43.94236,12.457777).
+city(edinburgh,55.9501755,-3.1875359).
+city(belgrade,44.802416,20.465601).
+city(bratislava,48.1483765,17.1073105).
+city(ljubljana,46.0514263,14.5059655).
+city(madrid,40.4166909,-3.7003454).
+city(stockholm,59.3327881,18.0644881).
+city(bern,46.9479986,7.4481481).
+city(kiev,50.440951,30.5271814).
+city(cardiff,51.4813069,-3.1804979).
 
-
-
-% UTILS
-% 
+% UTILS ------------------------------------------------------------------------
 % 
 %  dist_cities(brussels,prague,D).
 %  D = 716837.
@@ -156,7 +153,19 @@ geo2linear(Lat,Lon,X,Y):-
 	X is round(6371*cos(LatR)*cos(LonR)),
 	Y is round(6371*cos(LatR)*sin(LonR)).
 
+totalCities(X) :-
+	findall(C, city(C,_,_), L),
+	length(L,Y),
+	X is Y + 1.
+	
+doCross(City1, City2, City3, City4) :-
+    linearCoord(City1, C1x, C1y),
+    linearCoord(City2, C2x, C2y),
+    linearCoord(City3, C3x, C3y),
+    linearCoord(City4, C4x, C4y),
+    doIntersect((C1x, C1y), (C2x, C2y), (C3x, C3y), (C4x, C4y)).
 
+% ------------------------------------------------------------------------
 
 %Limit 10 Cities
 tsp1(City, Visited, Distance) :-
@@ -171,11 +180,6 @@ tsp(City, Visited, Distance) :-
 	get_road(City, City, Visited, Distance), 
 	length(Visited, X), totalCities(Y), X == Y.
 
-totalCities(X) :-
-	findall(C, city(C,_,_), L),
-	length(L,Y),
-	X is Y + 1.
-
 get_road(Start, End, Visited, Result) :-
     get_road(Start, End, [Start], 0, Visited, Result).
 
@@ -189,59 +193,10 @@ get_road(Start, End, Waypoints, DistanceAcc, Visited, TotalDistance) :-
     \+ member(Waypoint, Waypoints),
     NewDistanceAcc is DistanceAcc + Distance,
     get_road(Waypoint, End, [Waypoint|Waypoints], NewDistanceAcc, Visited, TotalDistance).
-
-
-
-tsp2(Orig, Visit):-
-    bestfs(Orig, Orig, Visit).    
-
-estimativa(X, Dest ,EstX) :-
-    dist_cities(X, Dest, EstX).
-
-bestfs(Orig, Dest, Cam):-
-	bestfs2(Dest, [Orig], Cam).
-
-%condicao final: destino = nó à cabeça do caminho actual
-bestfs2(Dest, [Dest|T], Cam):- !,
-	%caminho actual está invertido
-	reverse([Dest|T], Cam).
-
-bestfs2(Dest, LA, Cam):-
-    LA = [Act|_],
-	%calcular todos os nodos adjacentes nao visitados e
-	% guardar um tuplo com estimativa e novo caminho
-	findall((EstX, [X|LA]),
-	(city(X, _, _), \+ member(X, LA), estimativa(X, Act, EstX)), Novos),
-	%ordenar pela estimativa
-	sort(Novos, NovosOrd),
-	%extrair o melhor que está à cabeça
-	NovosOrd = [(_,Melhor)|_],
-	%chamada recursiva
-	bestfs2(Dest, Melhor, Cam).
-
-bestfsX(Orig, Cam):-
-	bestfs2X([Orig], Cam).
-
-bestfs2X(LA, Cam):-
-    LA = [Act|_],
-	%calcular todos os nodos adjacentes nao visitados e
-	% guardar um tuplo com estimativa e novo caminho
-	findall((EstX, [X|LA]),
-	(city(X, _, _), \+ member(X, LA), estimativa(X, Act, EstX)), Novos),
-	%ordenar pela estimativa
-	sort(Novos, NovosOrd),
-	%extrair o melhor que está à cabeça
-	NovosOrd = [(_,Melhor)|_],
-    length([Melhor|LA], X), totalCities(Y),
-    ( X == Y ->  !,
-    reverse([Melhor|LA], Cam)
-    ;
-	%chamada recursiva
-	bestfs2X(Melhor, Cam) ).
 	
-%----------------------------------------------------------------
+% ------------------------------------------------------------------------
 	
-tsp2New(Orig, Path) :-
+tsp2(Orig, Path) :-
     findall(X, city(X,_,_), AllCities),
     delete(AllCities, Orig, ToCheck),
     findPath(ToCheck, [Orig], FinalPath),
@@ -251,7 +206,6 @@ findPath([], Path, Path).
 findPath(ToCheck, FinalPath, F) :- 
     bestNextNode(FinalPath, Next),
     append(FinalPath, [Next], NewFinalPath),
-    %write(NewFinalPath), nl,
     delete(ToCheck, Next, NewToCheck),
     findPath(NewToCheck, NewFinalPath, F).
 
@@ -265,23 +219,37 @@ bestNextNode(LA, Next) :-
 	sort(Novos, NovosOrd),
 	%extrair o melhor que está à cabeça
 	NovosOrd = [(_,[Next|_])|_].
-	
-%---------------------------------------------------------
 
-tsp3(Orig, Visit):-
-    tsp2(Orig, VisitTmp),
-    del_cross(VisitTmp),
-    Visit = VisitTmp.
+% ------------------------------------------------------------------------
 
-del_cross([_|[_|_]]) :- !.
+tsp3(Orig, Path) :-
+    tsp2(Orig, NPath),
+    tsp3_for_1(NPath, [], Path).
 
-del_cross([H1|[H2|T]]) :- 
-    find_cross(H1, H2, T).
-
-find_cross(H1, H2, [H3|[H4|T]]) :-
-    linearCoord(H1, H1x, H1y),
-    linearCoord(H2, H2x, H2y),
-    doIntersect((H1x,H1y), (H2x, H2y), (, ), (, )) -> 
-  ; ,
-    find_cross(H1, H2, [H4|T]).
+tsp3_for_1([A|[B|[C|[]]]], L, LFinal) :-
+    append(L, [A], L1),
+    append(L1, [B], L2),
+    append(L2, [C], LFinal).
     
+tsp3_for_1([H1|[H2|T]], LTemp, LFinal) :-
+    tsp3_for_2(LTemp, [H1|[H2|T]], H1, H2, T, NList),
+    NList = [X|NNList],
+    append(LTemp, [X], NLTemp),
+    tsp3_for_1(NNList, NLTemp, LFinal).
+
+tsp3_for_2(_, L, _, _, [_|[_|[]]], L).
+tsp3_for_2(LO, LOrig, C1, C2, [H1|[H2|T]], LFinal) :-
+    (doCross(C1, C2, H1, H2) ->
+    	fixCross(LOrig, C2, H1, [], LFinal)
+    	;
+    	tsp3_for_2(LO, LOrig, C1, C2, [H2|T], LFinal)
+    ).
+
+fixCross([], _, _, LFinal, LFinal).
+fixCross([H|T], C1, C2, NLista, LFinal) :-
+    (H = C1, append(NLista, [C2], NewLAlterada);
+    H = C2, append(NLista, [C1], NewLAlterada);
+    H \= C1, H \= C2, append(NLista, [H], NewLAlterada)),
+    fixCross(T, C1, C2, NewLAlterada, LFinal).
+
+% ------------------------------------------------------------------------
