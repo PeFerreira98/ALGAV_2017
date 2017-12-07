@@ -1,4 +1,4 @@
-  
+
 EmptyBoard = [[0,0,0,0,0,0,0],
               [0,0,0,0,0,0,0],
               [0,0,0,0,0,0,0],
@@ -10,22 +10,22 @@ winLine(P, [X1, X2, X3, X4, X5, X6, X7]) :-
 	equal(X1, X2, X3, X4, P) ;
     equal(X2, X3, X4, X5, P) ;
     equal(X3, X4, X5, X6, P) ;
-    equal(X4, X5, X6, X7, P) ;
+    equal(X4, X5, X6, X7, P) .
     
 winCol(P, [X1, X2, X3, X4, X5, X6]) :-
     equal(X1, X2, X3, X4, P) ;
     equal(X2, X3, X4, X5, P) ;
-    equal(X3, X4, X5, X6, P) ;
+    equal(X3, X4, X5, X6, P) .
 
 
 % winPos(+Player, +Board) 
 % % True if Player win in Board. 
-winPos(P, [X1, X2, X3, X4, X5, X6, X7],
+winPos(P, [[X1, X2, X3, X4, X5, X6, X7],
        [X8, X9, X10, X11, X12, X13, X14],
        [X15, X16, X17, X18, X19, X20, X21],
        [X22, X23, X24, X25, X26, X27, X28],
        [X29, X30, X31, X32, X33, X34, X35],
-       [X36, X37, X38, X39, X40, X41, X42]) :-
+       [X36, X37, X38, X39, X40, X41, X42]]) :-
     
     winLine(P, [X1, X2, X3, X4, X5, X6, X7]);
     winLine(P, [X8, X9, X10, X11, X12, X13, X14]);
@@ -59,20 +59,20 @@ winPos(P, [X1, X2, X3, X4, X5, X6, X7],
     equal(X21, X27, X33, X39, P) ;    % 1st diag
     
     
-    equal(X1, X10, X16, X22, P) ;    % 2nd diag
-    equal(X2, X11, X17, X23, P) ;    % 2nd diag
-    equal(X3, X12, X18, X24, P) ;    % 2nd diag
-    equal(X4, X13, X19, X25, P) ;    % 2nd diag
+    equal(X1, X9, X17, X25, P) ;    % 2nd diag
+    equal(X2, X10, X18, X26, P) ;    % 2nd diag
+    equal(X3, X11, X19, X27, P) ;    % 2nd diag
+    equal(X4, X12, X20, X28, P) ;    % 2nd diag
     
-    equal(X11, X17, X23, X29, P) ;    % 2nd diag
-    equal(X12, X18, X24, X30, P) ;    % 2nd diag
-    equal(X13, X19, X25, X31, P) ;    % 2nd diag
-    equal(X14, X20, X26, X32, P) ;    % 2nd diag
+    equal(X8, X16, X24, X32, P) ;    % 2nd diag
+    equal(X9, X17, X25, X33, P) ;    % 2nd diag
+    equal(X10, X18, X26, X34, P) ;    % 2nd diag
+    equal(X11, X19, X27, X35, P) ;    % 2nd diag
     
-    equal(X18, X24, X30, X36, P) ;    % 2nd diag
-    equal(X19, X25, X31, X37, P) ;    % 2nd diag
-    equal(X20, X26, X32, X38, P) ;    % 2nd diag
-    equal(X21, X27, X33, X39, P) ;    % 2nd diag
+    equal(X15, X23, X31, X39, P) ;    % 2nd diag
+    equal(X16, X24, X32, X40, P) ;    % 2nd diag
+    equal(X17, X25, X33, X41, P) ;    % 2nd diag
+    equal(X18, X26, X34, X42, P) .   % 2nd diag
 
 
 % drawPos(+Player, +Board) 
@@ -102,8 +102,8 @@ move([X1, play, Board], [X2, draw, NextBoard]) :-
 move([X1, play, Board], [X2, play, NextBoard]) :-
     nextPlayer(X1, X2), move_aux(X1, Board, NextBoard).
 
-% True if NextBoard is Board whit an empty case replaced by Player mark. 
-move_aux(P, [0|Bs], [P|Bs]).
+% True if NextBoard is Board with an empty case replaced by Player mark. 
+move_aux(P, [0|Bs], [P|Bs]). % TO FUCKING DO! URGENT SHIT STUFF
 move_aux(P, [B|Bs], [B|B2s]) :-
      move_aux(P, Bs, B2s).
 
