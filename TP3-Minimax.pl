@@ -1,66 +1,47 @@
-      
-EmptyBoard = [0, 0, 0, 0, 0, 0, 0, 0, 0].
+  
+EmptyBoard = [[0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0],
+              [0,0,0,0,0,0,0]].
+
+winLine(P, [X1, X2, X3, X4, X5, X6, X7]) :-
+	equal(X1, X2, X3, X4, P) ;
+    equal(X2, X3, X4, X5, P) ;
+    equal(X3, X4, X5, X6, P) ;
+    equal(X4, X5, X6, X7, P) ;
+    
+winCol(P, [X1, X2, X3, X4, X5, X6]) :-
+    equal(X1, X2, X3, X4, P) ;
+    equal(X2, X3, X4, X5, P) ;
+    equal(X3, X4, X5, X6, P) ;
+
 
 % winPos(+Player, +Board) 
 % % True if Player win in Board. 
-winPos(P, [X1, X2, X3, X4, X5, X6, X7, X8, X9]) :-
-    equal(X1, X2, X3, X4, P) ;    % 1st line
-    equal(X2, X3, X4, X5, P) ;    % 1st line
-    equal(X3, X4, X5, X6, P) ;    % 1st line
-    equal(X4, X5, X6, X7, P) ;    % 1st line
+winPos(P, [X1, X2, X3, X4, X5, X6, X7],
+       [X8, X9, X10, X11, X12, X13, X14],
+       [X15, X16, X17, X18, X19, X20, X21],
+       [X22, X23, X24, X25, X26, X27, X28],
+       [X29, X30, X31, X32, X33, X34, X35],
+       [X36, X37, X38, X39, X40, X41, X42]) :-
     
-    equal(X8, X9, X10, X11, P) ;    % 2nd line
-    equal(X9, X10, X11, X12, P) ;    % 2nd line
-    equal(X10, X11, X12, X13, P) ;    % 2nd line
-    equal(X11, X12, X13, X14, P) ;    % 2nd line
+    winLine(P, [X1, X2, X3, X4, X5, X6, X7]);
+    winLine(P, [X8, X9, X10, X11, X12, X13, X14]);
+    winLine(P, [X15, X16, X17, X18, X19, X20, X21]);
+    winLine(P, [X22, X23, X24, X25, X26, X27, X28]);
+    winLine(P, [X29, X30, X31, X32, X33, X34, X35]);
+    winLine(P,  [X36, X37, X38, X39, X40, X41, X42]);
     
-    equal(X15, X16, X17, X18, P) ;    % 3rd line
-    equal(X16, X17, X18, X19, P) ;    % 3rd line
-    equal(X17, X18, X19, X20, P) ;    % 3rd line
-    equal(X18, X19, X20, X21, P) ;    % 3rd line
-  
-    equal(X22, X23, X24, X25, P) ;    % 4th line
-    equal(X23, X24, X25, X26, P) ;    % 4th line
-    equal(X24, X25, X26, X27, P) ;    % 4th line
-    equal(X25, X26, X27, X28, P) ;    % 4th line
-    
-    equal(X29, X30, X31, X32, P) ;    % 5th line
-    equal(X30, X31, X32, X33, P) ;    % 5th line
-    equal(X31, X32, X33, X34, P) ;    % 5th line
-    equal(X32, X33, X34, X35, P) ;    % 5th line
-    
-    equal(X36, X37, X38, X39, P) ;    % 6th line
-    equal(X37, X38, X39, X40, P) ;    % 6th line
-    equal(X38, X39, X41, X42, P) ;    % 6th line
-    equal(X39, X40, X41, X42, P) ;    % 6th line
-    
-    equal(X1, X8, X15, X22, P) ;    % 1st col
-    equal(X8, X15, X22, X29, P) ;    % 1st col
-    equal(X15, X22, X29, X36, P) ;    % 1st col
-    
-    equal(X2, X9, X16, X23, P) ;    % 2nd col
-    equal(X9, X16, X23, X30, P) ;    % 2nd col
-    equal(X16, X23, X30, X37, P) ;    % 2nd col
-    
-    equal(X3, X10, X17, X24, P) ;    % 3rd col
-    equal(X10, X17, X24, X31, P) ;    % 3rd col
-    equal(X17, X24, X31, X38, P) ;    % 3rd col
-    
-    equal(X4, X11, X18, X25, P) ;    % 4th col
-    equal(X11, X18, X25, X32, P) ;    % 4th col
-    equal(X18, X25, X32, X39, P) ;    % 4th col
-    
-    equal(X5, X12, X19, X26, P) ;    % 5th col
-    equal(X12, X19, X26, X33, P) ;    % 5th col
-    equal(X19, X26, X33, X40, P) ;    % 5th col
-    
-    equal(X6, X13, X20, X27, P) ;    % 6th col
-    equal(X13, X20, X27, X34, P) ;    % 6th col
-    equal(X20, X27, X34, X41, P) ;    % 6th col
-    
-    equal(X7, X14, X21, X28, P) ;    % 7th col
-    equal(X14, X21, X28, X35, P) ;    % 7th col
-    equal(X21, X28, X35, X42, P) ;    % 7th col
+    winCol(P, [X1, X8, X15, X22, X29, X36]);
+    winCol(P, [X2, X9, X16, X23, X30, X37]);
+    winCol(P, [X3, X10, X17, X24, X31, X38]);
+    winCol(P, [X4, X11, X18, X25, X32, X39]);
+    winCol(P, [X5, X12, X19, X26, X33, X40]);
+    winCol(P, [X6, X13, X20, X27, X34, X41]);
+    winCol(P, [X7, X14, X21, X28, X35, X42]);
+
     
     equal(X4, X10, X16, X22, P) ;    % 1st diag
     equal(X5, X11, X17, X23, P) ;    % 1st diag
@@ -68,27 +49,30 @@ winPos(P, [X1, X2, X3, X4, X5, X6, X7, X8, X9]) :-
     equal(X7, X13, X19, X25, P) ;    % 1st diag
     
     equal(X11, X17, X23, X29, P) ;    % 1st diag
-    equal(X, X, X, X, P) ;    % 1st diag
-    equal(X, X, X, X, P) ;    % 1st diag
-    equal(X, X, X, X, P) ;    % 1st diag
+    equal(X12, X18, X24, X30, P) ;    % 1st diag
+    equal(X13, X19, X25, X31, P) ;    % 1st diag
+    equal(X14, X20, X26, X32, P) ;    % 1st diag
     
-    equal(X, X, X, X, P) ;    % 1st diag
-    equal(X, X, X, X, P) ;    % 1st diag
-    equal(X, X, X, X, P) ;    % 1st diag
-    equal(X, X, X, X, P) ;    % 1st diag
+    equal(X18, X24, X30, X36, P) ;    % 1st diag
+    equal(X19, X25, X31, X37, P) ;    % 1st diag
+    equal(X20, X26, X32, X38, P) ;    % 1st diag
+    equal(X21, X27, X33, X39, P) ;    % 1st diag
     
-    equal(X, X, X, X, P) ;    % 2nd diag
-    equal(X, X, X, X, P) ;    % 2nd diag
-    equal(X, X, X, X, P) ;    % 2nd diag
-    equal(X, X, X, X, P) ;    % 2nd diag
-    equal(X, X, X, X, P) ;    % 2nd diag
-    equal(X, X, X, X, P) ;    % 2nd diag
-    equal(X, X, X, X, P) ;    % 2nd diag
-    equal(X, X, X, X, P) ;    % 2nd diag
-    equal(X, X, X, X, P) ;    % 2nd diag
-    equal(X, X, X, X, P) ;    % 2nd diag
-    equal(X, X, X, X, P) ;    % 2nd diag
-    equal(X, X, X, X, P) ;    % 2nd diag
+    
+    equal(X1, X10, X16, X22, P) ;    % 2nd diag
+    equal(X2, X11, X17, X23, P) ;    % 2nd diag
+    equal(X3, X12, X18, X24, P) ;    % 2nd diag
+    equal(X4, X13, X19, X25, P) ;    % 2nd diag
+    
+    equal(X11, X17, X23, X29, P) ;    % 2nd diag
+    equal(X12, X18, X24, X30, P) ;    % 2nd diag
+    equal(X13, X19, X25, X31, P) ;    % 2nd diag
+    equal(X14, X20, X26, X32, P) ;    % 2nd diag
+    
+    equal(X18, X24, X30, X36, P) ;    % 2nd diag
+    equal(X19, X25, X31, X37, P) ;    % 2nd diag
+    equal(X20, X26, X32, X38, P) ;    % 2nd diag
+    equal(X21, X27, X33, X39, P) ;    % 2nd diag
 
 
 % drawPos(+Player, +Board) 
@@ -156,46 +140,4 @@ betterOf(_, _, Pos1, Val1, Pos1, Val1).        % Otherwise Pos1 better than Pos0
 
 min_to_move([o, _, _]). 
 max_to_move([x, _, _]).
-
-% ----------------------------------------------
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% 
-% --------------------------
-
-EmptyBoard = [0,0,0,0,0,0,0,
-              0,0,0,0,0,0,0,
-              0,0,0,0,0,0,0,
-              0,0,0,0,0,0,0,
-              0,0,0,0,0,0,0,
-              0,0,0,0,0,0,0].
-
-% winPos(+Player, +Board) 
-% % True if Player win in Board. 
-winPos(P, [X1, X2, X3, X4, X5, X6, X7, 
-          X8, X9, X10, X11, X12, X13, X14,
-          X15, X16, X17, X18, X19, X20]) :-
-    equal(X1, X2, X3, P) ;    % 1st line
-    equal(X4, X5, X6, P) ;    % 2nd line
-    equal(X7, X8, X9, P) ;    % 3rd line
-    equal(X1, X4, X7, P) ;    % 1st col
-    equal(X2, X5, X8, P) ;    % 2nd col
-    equal(X3, X6, X9, P) ;    % 3rd col
-    equal(X1, X5, X9, P) ;    % 1st diag
-    equal(X3, X5, X7, P).     % 2nd diag
-
-% drawPos(+Player, +Board) 
-% True if the game is a draw. 
-drawPos(_,Board) :-
-    \+ member(0, Board).
 
